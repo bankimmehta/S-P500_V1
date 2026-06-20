@@ -14,7 +14,19 @@ CACHE_DIR = ROOT / "cache"
 OUTPUT_DIR = ROOT / "output"
 LOG_DIR = ROOT / "logs"
 
-CONSTITUENTS_CSV = DATA_DIR / "sp500_constituents.csv"
+
+def _resolve(*relpaths):
+    """Return the first existing path among candidates; else the first (for writing).
+    Lets files live either at the repo root (GUI uploads) or in subfolders."""
+    cands = [ROOT / r for r in relpaths]
+    for c in cands:
+        if c.exists():
+            return c
+    return cands[0]
+
+
+# Looks in the repo root first (where GitHub-GUI uploads land), then data/.
+CONSTITUENTS_CSV = _resolve("sp500_constituents.csv", "data/sp500_constituents.csv")
 CONSTITUENTS_URL = ("https://raw.githubusercontent.com/datasets/"
                     "s-and-p-500-companies/main/data/constituents.csv")
 

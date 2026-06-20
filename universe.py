@@ -9,6 +9,10 @@ import config
 
 def load() -> list[dict]:
     out = []
+    if not config.CONSTITUENTS_CSV.exists():
+        print(f"[universe] constituents CSV not found at {config.CONSTITUENTS_CSV} "
+              "(checked repo root and data/). Sector will fall back to yfinance's field.")
+        return out
     with open(config.CONSTITUENTS_CSV, encoding="utf-8") as f:
         for row in csv.DictReader(f):
             sym = (row.get("Symbol") or "").strip()
